@@ -501,6 +501,12 @@
             </Projects>
             <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
         </InternalsVisibleTo>
+        <InternalsVisibleTo Include="Nuclei.Fusion.Samples">
+            <Projects>
+                Nuclei.Fusion;
+            </Projects>
+            <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
+        </InternalsVisibleTo>
         <InternalsVisibleTo Include="Moq">
             <Projects>
                 Nuclei.Fusion;
