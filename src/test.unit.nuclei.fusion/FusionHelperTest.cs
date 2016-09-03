@@ -60,10 +60,10 @@ namespace Nuclei.Fusion
             // mscorlib
             _assemblies.Add(GetAssemblyPath(typeof(string).Assembly), typeof(string).Assembly);
 
-            // gallio
+            // nunit
             _assemblies.Add(GetAssemblyPath(typeof(SetUpAttribute).Assembly), typeof(SetUpAttribute).Assembly);
 
-            // lokad
+            // Nuclei.Build
             _assemblies.Add(GetAssemblyPath(typeof(AssemblyBuildInformationAttribute).Assembly), typeof(AssemblyBuildInformationAttribute).Assembly);
 
             // NLog - This one is to verify a bug fix

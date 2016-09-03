@@ -501,6 +501,12 @@
             </Projects>
             <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
         </InternalsVisibleTo>
+        <InternalsVisibleTo Include="Nuclei.Fusion.Samples">
+            <Projects>
+                Nuclei.Fusion;
+            </Projects>
+            <KeyFile>$(SOFTWARE_SIGNING_KEY_PATH)\nuclei.snk</KeyFile>
+        </InternalsVisibleTo>
         <InternalsVisibleTo Include="Moq">
             <Projects>
                 Nuclei.Fusion;
@@ -646,7 +652,7 @@
         <!--
             The locations of the files that should be analyzed by FxCop.
         -->
-        <FxCopFiles Include="$(DirSrc)\**\bin\**\Nuclei.Fusion.dll"
+        <FxCopFiles Include="$(DirSrc)\**\bin\$(Configuration)\Nuclei.Fusion.dll"
                     Exclude="$(DirSrc)\**\bin\**\Test.*.dll">
             <TargetFramework>4.0</TargetFramework>
         </FxCopFiles>
