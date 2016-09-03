@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$DirTemp$\src\Nuclei.Fusion\*.cs.pp" target="content\Nuclei\Fusion" />
+    <file src="$DirTempSrc$\*.cs.pp" target="content\Nuclei\Fusion" />
   </files>
 </package>
