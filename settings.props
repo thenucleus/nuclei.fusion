@@ -251,7 +251,7 @@
         -->
 
         <!-- The directory that will contain all the files generated during the build process -->
-        <!-- <DirBuild Condition=" '$(DirBuild)' == '' ">$(DirWorkspace)\build</DirBuild> -->
+        <DirBuild Condition=" '$(DirBuild)' == '' ">$(DirWorkspace)\build</DirBuild>
 
         <!--
             The directory that will contain all the binaries generated during the build process.
@@ -282,7 +282,10 @@
         <!-- <DirReportMoma Condition=" '$(DirReportMoma)' == '' ">$(DirBuildLogs)\moma</DirReportMoma> -->
 
         <!-- The directory that will contain all the temporary files needed during the build process -->
-        <!-- <DirBuildTemp Condition=" '$(DirBuildTemp)' == '' ">$(DirBuild)\temp</DirBuildTemp> -->
+        <DirBuildTemp Condition=" '$(DirBuildTemp)' == '' ">$(DirBuild)\temp</DirBuildTemp>
+
+        <!-- The directory that will contain all the temporary source files before they are included in the NuGet packages. -->
+        <DirTempSrc Condition=" '$(DirTempSrc)' == '' ">$(DirBuildTemp)\src</DirTempSrc>
 
         <!-- The directory that will contain all the test files generated during the test process -->
         <!-- <DirBuildTest Condition=" '$(DirBuildTest)' == '' ">$(DirBuild)\tests</DirBuildTest> -->
@@ -511,6 +514,9 @@
     <ItemGroup>
         <TemplateTokens Include="DirDoc">
             <ReplacementValue>$(DirDoc)</ReplacementValue>
+        </TemplateTokens>
+        <TemplateTokens Include="DirTempSrc">
+            <ReplacementValue>$(DirTempSrc)</ReplacementValue>
         </TemplateTokens>
     </ItemGroup>
 

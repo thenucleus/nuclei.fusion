@@ -275,6 +275,16 @@
         </BuildStepsToExecute>
         -->
 
+        <BuildStepsToExecute Include="$(DirWorkspace)\build.prepare.sourcetemplates.msbuild">
+            <Properties>
+                Configuration=$(ProductionConfiguration);
+                Platform=$(Platform)
+            </Properties>
+            <Groups>
+                Package;
+            </Groups>
+        </BuildStepsToExecute>
+
         <BuildStepsToExecute Include="$(BuildStepsPackNuGet)">
             <Properties>
                 Configuration=$(ProductionConfiguration);
@@ -705,7 +715,7 @@
     -->
     <ItemGroup>
         <NuGetPackageSpecs Include="$(DirSrc)\**\*.nuspec">
-            <ShouldBuildSymbols>true</ShouldBuildSymbols>
+            <ShouldBuildSymbols>false</ShouldBuildSymbols>
             <IncludedDependencies>
             </IncludedDependencies>
             <ExcludedDependencies></ExcludedDependencies>
@@ -724,7 +734,7 @@
             The following are not actually design time dependencies. They are secundairy dependencies which will be pulled in
             when the direct dependencies are grabbed.
         -->
-        <DesignTimeDependencies Include="Consul" />
+        <DesignTimeDependencies Include="Nuclei.Build" />
 
         <!-- The following are the actual design time dependencies -->
         <DesignTimeDependencies Include="nBuildKit" />
