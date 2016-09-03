@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="Nuclei">
-//     Copyright 2013 Nuclei. Licensed under the Apache License, Version 2.0.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -16,12 +17,12 @@ using NUnit.Framework;
 namespace Nuclei.Fusion
 {
     [TestFixture]
-    [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Unit tests do not need documentation.")]
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.DocumentationRules",
+        "SA1600:ElementsMustBeDocumented",
+        Justification = "Unit tests do not need documentation.")]
     public sealed class FusionHelperTest
     {
-        private readonly Dictionary<string, Assembly> m_Assemblies = new Dictionary<string, Assembly>();
-
         private static string GetAssemblyPath(Assembly assembly)
         {
             var codebase = assembly.CodeBase;
@@ -40,36 +41,38 @@ namespace Nuclei.Fusion
             return helper.LocateAssemblyOnAssemblyLoadFailure(null, new ResolveEventArgs(assemblyName));
         }
 
+        private readonly Dictionary<string, Assembly> _assemblies = new Dictionary<string, Assembly>();
+
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
             // mscorlib
-            m_Assemblies.Add(GetAssemblyPath(typeof(string).Assembly), typeof(string).Assembly);
+            _assemblies.Add(GetAssemblyPath(typeof(string).Assembly), typeof(string).Assembly);
 
             // gallio
-            m_Assemblies.Add(GetAssemblyPath(typeof(SetUpAttribute).Assembly), typeof(SetUpAttribute).Assembly);
+            _assemblies.Add(GetAssemblyPath(typeof(SetUpAttribute).Assembly), typeof(SetUpAttribute).Assembly);
 
             // lokad
-            m_Assemblies.Add(GetAssemblyPath(typeof(AssemblyBuildInformationAttribute).Assembly), typeof(AssemblyBuildInformationAttribute).Assembly);
+            _assemblies.Add(GetAssemblyPath(typeof(AssemblyBuildInformationAttribute).Assembly), typeof(AssemblyBuildInformationAttribute).Assembly);
 
             // NLog - This one is to verify a bug fix
             //   The bug behavior is that we couldn't locate this assembly because
             //   the public key token is: 5120e14c03d0593c but we were looking for
-            //   5120e14c3d0593c (note the missing 0 after the first c). This was 
+            //   5120e14c3d0593c (note the missing 0 after the first c). This was
             //   because we did the bit-to-hex for the public key token incorrectly.
-            m_Assemblies.Add(GetAssemblyPath(typeof(NLog.Logger).Assembly), typeof(NLog.Logger).Assembly);
+            _assemblies.Add(GetAssemblyPath(typeof(NLog.Logger).Assembly), typeof(NLog.Logger).Assembly);
 
             // us
-            m_Assemblies.Add(GetAssemblyPath(Assembly.GetExecutingAssembly()), Assembly.GetExecutingAssembly());
+            _assemblies.Add(GetAssemblyPath(Assembly.GetExecutingAssembly()), Assembly.GetExecutingAssembly());
         }
 
         private FusionHelper InitializeFusionHelper()
         {
             // Can effectively just return the current assembly / gallio assemblies / system
-            var helper = new FusionHelper(() => m_Assemblies.Keys.ToArray<string>());
+            var helper = new FusionHelper(() => _assemblies.Keys.ToArray<string>());
             helper.AssemblyLoader = (assemblyPath) =>
             {
-                return m_Assemblies[assemblyPath];
+                return _assemblies[assemblyPath];
             };
 
             return helper;
@@ -125,16 +128,16 @@ namespace Nuclei.Fusion
         {
             var helper = InitializeFusionHelper();
             Assert.AreSame(
-                typeof(AssemblyBuildInformationAttribute).Assembly, 
+                typeof(AssemblyBuildInformationAttribute).Assembly,
                 ExecuteLoadAssembly(helper, typeof(AssemblyBuildInformationAttribute).Assembly.FullName));
             Assert.AreSame(
-                typeof(TestAttribute).Assembly, 
+                typeof(TestAttribute).Assembly,
                 ExecuteLoadAssembly(helper, typeof(TestAttribute).Assembly.FullName));
             Assert.AreSame(
-                typeof(NLog.Logger).Assembly, 
+                typeof(NLog.Logger).Assembly,
                 ExecuteLoadAssembly(helper, typeof(NLog.Logger).Assembly.FullName));
             Assert.AreSame(
-                typeof(string).Assembly, 
+                typeof(string).Assembly,
                 ExecuteLoadAssembly(helper, typeof(string).Assembly.FullName));
         }
 
@@ -144,9 +147,9 @@ namespace Nuclei.Fusion
             var helper = InitializeFusionHelper();
             var assemblyName = typeof(TestAttribute).Assembly.GetName();
             var name = CreateFullAssemblyName(
-                assemblyName.Name, 
-                new Version(0, 0, 0, 0), 
-                assemblyName.CultureInfo, 
+                assemblyName.Name,
+                new Version(0, 0, 0, 0),
+                assemblyName.CultureInfo,
                 new System.Text.ASCIIEncoding().GetString(assemblyName.GetPublicKeyToken()));
             var result = ExecuteLoadAssembly(helper, name);
             Assert.IsNull(result);
@@ -158,9 +161,9 @@ namespace Nuclei.Fusion
             var helper = InitializeFusionHelper();
             var assemblyName = typeof(TestAttribute).Assembly.GetName();
             var name = CreateFullAssemblyName(
-                assemblyName.Name, 
-                assemblyName.Version, 
-                new CultureInfo("en-US"), 
+                assemblyName.Name,
+                assemblyName.Version,
+                new CultureInfo("en-US"),
                 new System.Text.ASCIIEncoding().GetString(assemblyName.GetPublicKeyToken()));
             var result = ExecuteLoadAssembly(helper, name);
             Assert.IsNull(result);

@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="Nuclei">
-//     Copyright 2013 Nuclei. Licensed under the Apache License, Version 2.0.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ namespace Nuclei.Fusion
     /// <para>
     /// The goal of the <c>FusionHelper</c> class is to provide a fallback for the
     /// assembly loading process. The <c>LocateAssemblyOnAssemblyLoadFailure</c> method
-    /// is attached to the <c>AppDomain.AssemblyResolve</c> event. 
+    /// is attached to the <c>AppDomain.AssemblyResolve</c> event.
     /// </para>
     /// <para>
     /// The <c>FusionHelper</c> searches through a set of directories or files for assembly files.
@@ -56,7 +57,9 @@ namespace Nuclei.Fusion
         /// <returns>
         ///     <see langword="true"/> if the assembly name is a fully qualified assembly name; otherwise, <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         private static bool IsAssemblyNameFullyQualified(string assemblyFullName)
         {
@@ -79,7 +82,7 @@ namespace Nuclei.Fusion
 
             return input
                 .Substring(
-                    input.IndexOf(AssemblyNameElements.KeyValueSeparator, StringComparison.OrdinalIgnoreCase) 
+                    input.IndexOf(AssemblyNameElements.KeyValueSeparator, StringComparison.OrdinalIgnoreCase)
                     + AssemblyNameElements.KeyValueSeparator.Length)
                 .Trim();
         }
@@ -96,7 +99,9 @@ namespace Nuclei.Fusion
         /// <returns>
         ///     <see langword="true"/> if the filePath points to the desired assembly; otherwise <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         private static bool IsFileTheDesiredAssembly(string filePath, string fileName, string version, string culture, string publicKey)
         {
@@ -165,14 +170,14 @@ namespace Nuclei.Fusion
                     }
                 }
 
-                if ((!string.IsNullOrEmpty(publicKey)) 
+                if ((!string.IsNullOrEmpty(publicKey))
                     && (!publicKey.Equals(AssemblyNameElements.NullString, StringComparison.OrdinalIgnoreCase)))
                 {
                     var actualPublicKeyToken = assemblyName.GetPublicKeyToken();
                     var str = actualPublicKeyToken.Aggregate(
-                        string.Empty, 
+                        string.Empty,
                         (current, value) => current + value.ToString("x2", CultureInfo.InvariantCulture));
-                    
+
                     return str.Equals(publicKey, StringComparison.OrdinalIgnoreCase);
                 }
             }
@@ -183,12 +188,12 @@ namespace Nuclei.Fusion
         /// <summary>
         /// The delegate which is used to return a file enumerator based on a specific directory.
         /// </summary>
-        private readonly Func<IEnumerable<string>> m_FileEnumerator;
+        private readonly Func<IEnumerable<string>> _fileEnumerator;
 
         /// <summary>
         /// The delegate which is used to load an assembly from a specific file path.
         /// </summary>
-        private Func<string, Assembly> m_AssemblyLoader;
+        private Func<string, Assembly> _assemblyLoader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FusionHelper"/> class.
@@ -199,41 +204,42 @@ namespace Nuclei.Fusion
         /// </exception>
         public FusionHelper(Func<IEnumerable<string>> fileEnumerator)
         {
+            if (fileEnumerator == null)
             {
-                Lokad.Enforce.Argument(() => fileEnumerator);
+                throw new ArgumentNullException("fileEnumerator");
             }
 
-            m_FileEnumerator = fileEnumerator;
+            _fileEnumerator = fileEnumerator;
         }
 
         /// <summary>
-        /// Gets the file enumerator which is used to enumerate the files in a specific directory. 
+        /// Gets the file enumerator which is used to enumerate the files in a specific directory.
         /// </summary>
         private Func<IEnumerable<string>> FileEnumerator
         {
-            get 
+            get
             {
-                return m_FileEnumerator;
+                return _fileEnumerator;
             }
         }
 
         /// <summary>
-        /// Gets or sets the assembly loader which is used to load assemblies from a specific path.
+        /// Sets the assembly loader which is used to load assemblies from a specific path.
         /// </summary>
         /// <todo>
         /// The assembly loader should also deal with NGEN-ed assemblies. This means that using
         /// Assembly.LoadFrom is not the best choice.
         /// </todo>
-        internal Func<string, Assembly> AssemblyLoader 
+        internal Func<string, Assembly> AssemblyLoader
         {
             private get
             {
-                return m_AssemblyLoader ?? (m_AssemblyLoader = path => Assembly.LoadFrom(path));
+                return _assemblyLoader ?? (_assemblyLoader = path => Assembly.LoadFrom(path));
             }
 
-            set 
+            set
             {
-                m_AssemblyLoader = value;
+                _assemblyLoader = value;
             }
         }
 
@@ -242,7 +248,7 @@ namespace Nuclei.Fusion
         /// </summary>
         /// <param name="sender">The object which raised the event.</param>
         /// <param name="args">
-        ///     The <see cref="System.ResolveEventArgs"/> instance containing the event data.
+        ///     The <see cref="ResolveEventArgs"/> instance containing the event data.
         /// </param>
         /// <returns>
         ///     An assembly reference if the required assembly can be found; otherwise <see langword="null"/>.
@@ -265,7 +271,7 @@ namespace Nuclei.Fusion
             Debug.Assert(assemblyFullName.Length != 0, "Expected a non-empty assembly name string.");
 
             // @todo: We should be able to use an AssemblyName because we can just load it from a string.
-            // It is not possible to use the AssemblyName class because that attempts to load the 
+            // It is not possible to use the AssemblyName class because that attempts to load the
             // assembly. Obviously we are currently trying to find the assembly.
             // So parse the actual assembly name from the name string
             //
@@ -324,9 +330,9 @@ namespace Nuclei.Fusion
                     string.Format(
                         CultureInfo.InvariantCulture,
                         ".{0}",
-                        AssemblyExtension), 
-                    StringComparison.OrdinalIgnoreCase) < 0) 
-                ? string.Format(CultureInfo.InvariantCulture, "{0}.{1}", moduleName, AssemblyExtension) 
+                        AssemblyExtension),
+                    StringComparison.OrdinalIgnoreCase) < 0)
+                ? string.Format(CultureInfo.InvariantCulture, "{0}.{1}", moduleName, AssemblyExtension)
                 : moduleName;
         }
     }
