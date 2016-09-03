@@ -32,7 +32,13 @@ namespace Nuclei.Fusion
 
         private static string CreateFullAssemblyName(string assemblyName, Version version, CultureInfo culture, string publicToken)
         {
-            return string.Format("{0}, Version={1}, Culture={2}, PublicKeyToken={3}", assemblyName, version, culture, publicToken);
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}, Version={1}, Culture={2}, PublicKeyToken={3}",
+                assemblyName,
+                version,
+                culture,
+                publicToken);
         }
 
         // Private method used to run the FusionHelper.LoadAssembly method
@@ -44,6 +50,11 @@ namespace Nuclei.Fusion
         private readonly Dictionary<string, Assembly> _assemblies = new Dictionary<string, Assembly>();
 
         [TestFixtureSetUp]
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1702:CompoundWordsShouldBeCasedCorrectly",
+            MessageId = "SetUp",
+            Justification = "Method is named after the task it does")]
         public void FixtureSetUp()
         {
             // mscorlib
