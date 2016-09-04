@@ -10,6 +10,7 @@ namespace Nuclei.Fusion
     /// <summary>
     /// Provides constants for use with AssemblyName objects.
     /// </summary>
+    //// GENERATED_CODE_ATTRIBUTE
     internal static class AssemblyNameElements
     {
         /// <summary>

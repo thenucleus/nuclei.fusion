@@ -12,8 +12,8 @@
 
     <Import Project="$(DirNBuildKitMsBuildExtensions)\FindAndReplaceInFile.msbuild"
             Condition="Exists('$(DirNBuildKitMsBuildExtensions)\FindAndReplaceInFile.msbuild')"/>
-
-
+    <Import Project="$(DirNBuildKitMsBuildExtensions)\GetSemanticVersionFromFile.msbuild"
+            Condition="Exists('$(DirNBuildKitMsBuildExtensions)\GetSemanticVersionFromFile.msbuild') AND '$(ExistsExtensionsGetSemanticVersionFromFile)' != 'true' " />
 
     <Target Name="_Build_Prepare_SourceTemplates_Run"
             DependsOnTargets="_Build_Prepare_SourceTemplates_DisplayInfo">
@@ -57,9 +57,14 @@
         <Copy SourceFiles="@(SourceFiles)"
               DestinationFiles="@(SourceFiles->'$(DirTempSrc)\%(Filename).cs.pp')" />
 
+        <GetSemanticVersionFromFile VersionFile="$(FileSemanticVersion)"
+                                    Condition="Exists('$(FileSemanticVersion)') AND '$(ShouldExecute)' == 'true' ">
+            <Output TaskParameter="VersionSemantic" PropertyName="VersionSemantic" />
+        </GetSemanticVersionFromFile>
+
         <ItemGroup>
-            <SourceTokens Include="namespace Nuclei.Fusion">
-                <ReplacementValue>namespace $rootnamespace$.Nuclei.Fusion</ReplacementValue>
+            <SourceTokens Include="namespace $(ProductNamespace)">
+                <ReplacementValue>namespace $rootnamespace$.$(ProductNamespace)</ReplacementValue>
             </SourceTokens>
             <SourceTokens Include="//// GENERATED_CODE_HEADER">
                 <ReplacementValue>
@@ -73,13 +78,16 @@
 //------------------------------------------------------------------------------
                 </ReplacementValue>
             </SourceTokens>
+             <SourceTokens Include="//// GENERATED_CODE_ATTRIBUTE">
+                <ReplacementValue>[System.CodeDom.Compiler.GeneratedCode(&quot;$(ProductName)&quot;, &quot;$(VersionSemantic)&quot;)]</ReplacementValue>
+            </SourceTokens>
         </ItemGroup>
 
         <ItemGroup>
-            <SourceNucleiFusionPp Include="$(DirTempSrc)\*.cs.pp" />
+            <SourcePp Include="$(DirTempSrc)\*.cs.pp" />
         </ItemGroup>
 
-        <FindAndReplaceInFile Input="%(SourceNucleiFusionPp.FullPath)"
+        <FindAndReplaceInFile Input="%(SourcePp.FullPath)"
                               Tokens="@(SourceTokens)" />
     </Target>
  </Project>

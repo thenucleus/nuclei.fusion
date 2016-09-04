@@ -43,6 +43,7 @@ namespace Nuclei.Fusion
     /// be called from one thread.
     /// </para>
     /// </design>
+    //// GENERATED_CODE_ATTRIBUTE
     internal sealed class FusionHelper
     {
         /// <summary>
