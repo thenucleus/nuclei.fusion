@@ -1,14 +1,16 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="Nuclei">
-//     Copyright 2013 Nuclei. Licensed under the Apache License, Version 2.0.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
-
+//// GENERATED_CODE_HEADER
 namespace Nuclei.Fusion
 {
     /// <summary>
     /// Provides constants for use with AssemblyName objects.
     /// </summary>
+    //// GENERATED_CODE_ATTRIBUTE
     internal static class AssemblyNameElements
     {
         /// <summary>

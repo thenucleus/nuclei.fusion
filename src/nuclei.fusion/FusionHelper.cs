@@ -1,9 +1,10 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright company="Nuclei">
-//     Copyright 2013 Nuclei. Licensed under the Apache License, Version 2.0.
+// <copyright company="TheNucleus">
+// Copyright (c) TheNucleus. All rights reserved.
+// Licensed under the Apache License, Version 2.0 license. See LICENCE.md file in the project root for full license information.
 // </copyright>
 //-----------------------------------------------------------------------
-
+//// GENERATED_CODE_HEADER
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace Nuclei.Fusion
     /// <para>
     /// The goal of the <c>FusionHelper</c> class is to provide a fallback for the
     /// assembly loading process. The <c>LocateAssemblyOnAssemblyLoadFailure</c> method
-    /// is attached to the <c>AppDomain.AssemblyResolve</c> event. 
+    /// is attached to the <c>AppDomain.AssemblyResolve</c> event.
     /// </para>
     /// <para>
     /// The <c>FusionHelper</c> searches through a set of directories or files for assembly files.
@@ -42,6 +43,7 @@ namespace Nuclei.Fusion
     /// be called from one thread.
     /// </para>
     /// </design>
+    //// GENERATED_CODE_ATTRIBUTE
     internal sealed class FusionHelper
     {
         /// <summary>
@@ -50,38 +52,48 @@ namespace Nuclei.Fusion
         private const string AssemblyExtension = "dll";
 
         /// <summary>
-        /// Determines whether the assembly name fully qualified, i.e. contains the name, version, culture and public key.
-        /// </summary>
-        /// <param name="assemblyFullName">Full name of the assembly.</param>
-        /// <returns>
-        ///     <see langword="true"/> if the assembly name is a fully qualified assembly name; otherwise, <see langword="false"/>.
-        /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
-            Justification = "Documentation can start with a language keyword")]
-        private static bool IsAssemblyNameFullyQualified(string assemblyFullName)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(assemblyFullName), "The assembly full name should not be empty.");
-
-            // Assume that assembly file paths do not normally have commas in them
-            return assemblyFullName.Contains(",");
-        }
-
-        /// <summary>
         /// Extracts the value from a key value pair which is embedded in the assembly full name.
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>
         /// The value part of the key-value pair.
         /// </returns>
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
         private static string ExtractValueFromKeyValuePair(string input)
         {
             Debug.Assert(!string.IsNullOrEmpty(input), "The input should not be empty.");
 
             return input
                 .Substring(
-                    input.IndexOf(AssemblyNameElements.KeyValueSeparator, StringComparison.OrdinalIgnoreCase) 
+                    input.IndexOf(AssemblyNameElements.KeyValueSeparator, StringComparison.OrdinalIgnoreCase)
                     + AssemblyNameElements.KeyValueSeparator.Length)
                 .Trim();
+        }
+
+        /// <summary>
+        /// Determines whether the assembly name fully qualified, i.e. contains the name, version, culture and public key.
+        /// </summary>
+        /// <param name="assemblyFullName">Full name of the assembly.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the assembly name is a fully qualified assembly name; otherwise, <see langword="false"/>.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+            Justification = "Documentation can start with a language keyword")]
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
+        private static bool IsAssemblyNameFullyQualified(string assemblyFullName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(assemblyFullName), "The assembly full name should not be empty.");
+
+            // Assume that assembly file paths do not normally have commas in them
+            return assemblyFullName.Contains(",");
         }
 
         /// <summary>
@@ -96,7 +108,9 @@ namespace Nuclei.Fusion
         /// <returns>
         ///     <see langword="true"/> if the filePath points to the desired assembly; otherwise <see langword="false"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1628:DocumentationTextMustBeginWithACapitalLetter",
+        [SuppressMessage(
+            "Microsoft.StyleCop.CSharp.DocumentationRules",
+            "SA1628:DocumentationTextMustBeginWithACapitalLetter",
             Justification = "Documentation can start with a language keyword")]
         private static bool IsFileTheDesiredAssembly(string filePath, string fileName, string version, string culture, string publicKey)
         {
@@ -165,14 +179,14 @@ namespace Nuclei.Fusion
                     }
                 }
 
-                if ((!string.IsNullOrEmpty(publicKey)) 
+                if ((!string.IsNullOrEmpty(publicKey))
                     && (!publicKey.Equals(AssemblyNameElements.NullString, StringComparison.OrdinalIgnoreCase)))
                 {
                     var actualPublicKeyToken = assemblyName.GetPublicKeyToken();
                     var str = actualPublicKeyToken.Aggregate(
-                        string.Empty, 
+                        string.Empty,
                         (current, value) => current + value.ToString("x2", CultureInfo.InvariantCulture));
-                    
+
                     return str.Equals(publicKey, StringComparison.OrdinalIgnoreCase);
                 }
             }
@@ -181,14 +195,39 @@ namespace Nuclei.Fusion
         }
 
         /// <summary>
+        /// Turns the module name into a qualified file name by adding the default assembly extension.
+        /// </summary>
+        /// <param name="moduleName">Name of the module.</param>
+        /// <returns>
+        /// The expected name of the assembly file that contains the module.
+        /// </returns>
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
+        private static string MakeModuleNameQualifiedFileName(string moduleName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(moduleName), "The assembly file name should not be empty.");
+
+            return (moduleName.IndexOf(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        ".{0}",
+                        AssemblyExtension),
+                    StringComparison.OrdinalIgnoreCase) < 0)
+                ? string.Format(CultureInfo.InvariantCulture, "{0}.{1}", moduleName, AssemblyExtension)
+                : moduleName;
+        }
+
+        /// <summary>
         /// The delegate which is used to return a file enumerator based on a specific directory.
         /// </summary>
-        private readonly Func<IEnumerable<string>> m_FileEnumerator;
+        private readonly Func<IEnumerable<string>> _fileEnumerator;
 
         /// <summary>
         /// The delegate which is used to load an assembly from a specific file path.
         /// </summary>
-        private Func<string, Assembly> m_AssemblyLoader;
+        private Func<string, Assembly> _assemblyLoader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FusionHelper"/> class.
@@ -197,59 +236,62 @@ namespace Nuclei.Fusion
         /// <exception cref="ArgumentNullException">
         ///     Thrown if <paramref name="fileEnumerator"/> is <see langword="null" />.
         /// </exception>
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
         public FusionHelper(Func<IEnumerable<string>> fileEnumerator)
         {
+            if (fileEnumerator == null)
             {
-                Lokad.Enforce.Argument(() => fileEnumerator);
+                throw new ArgumentNullException("fileEnumerator");
             }
 
-            m_FileEnumerator = fileEnumerator;
+            _fileEnumerator = fileEnumerator;
         }
 
         /// <summary>
-        /// Gets the file enumerator which is used to enumerate the files in a specific directory. 
-        /// </summary>
-        private Func<IEnumerable<string>> FileEnumerator
-        {
-            get 
-            {
-                return m_FileEnumerator;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the assembly loader which is used to load assemblies from a specific path.
+        /// Sets the assembly loader which is used to load assemblies from a specific path.
         /// </summary>
         /// <todo>
         /// The assembly loader should also deal with NGEN-ed assemblies. This means that using
         /// Assembly.LoadFrom is not the best choice.
         /// </todo>
-        internal Func<string, Assembly> AssemblyLoader 
+        [SuppressMessage(
+            "Microsoft.Reliability",
+            "CA2001:AvoidCallingProblematicMethods",
+            MessageId = "System.Reflection.Assembly.LoadFrom",
+            Justification = "The whole point of this method is to load assemblies which are not on the load path.")]
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
+        internal Func<string, Assembly> AssemblyLoader
         {
             private get
             {
-                return m_AssemblyLoader ?? (m_AssemblyLoader = path => Assembly.LoadFrom(path));
+                return _assemblyLoader ?? (_assemblyLoader = path => Assembly.LoadFrom(path));
             }
 
-            set 
+            set
             {
-                m_AssemblyLoader = value;
+                _assemblyLoader = value;
             }
         }
 
         /// <summary>
-        /// An event handler which is invoked when the search for an assembly fails.
+        /// Gets the file enumerator which is used to enumerate the files in a specific directory.
         /// </summary>
-        /// <param name="sender">The object which raised the event.</param>
-        /// <param name="args">
-        ///     The <see cref="System.ResolveEventArgs"/> instance containing the event data.
-        /// </param>
-        /// <returns>
-        ///     An assembly reference if the required assembly can be found; otherwise <see langword="null"/>.
-        /// </returns>
-        public Assembly LocateAssemblyOnAssemblyLoadFailure(object sender, ResolveEventArgs args)
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
+        private Func<IEnumerable<string>> FileEnumerator
         {
-            return LocateAssembly(args.Name);
+            get
+            {
+                return _fileEnumerator;
+            }
         }
 
         /// <summary>
@@ -259,13 +301,17 @@ namespace Nuclei.Fusion
         /// <returns>
         /// The desired assembly if is is in the search path; otherwise, <see langword="null"/>.
         /// </returns>
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
         private Assembly LocateAssembly(string assemblyFullName)
         {
             Debug.Assert(assemblyFullName != null, "Expected a non-null assembly name string.");
             Debug.Assert(assemblyFullName.Length != 0, "Expected a non-empty assembly name string.");
 
             // @todo: We should be able to use an AssemblyName because we can just load it from a string.
-            // It is not possible to use the AssemblyName class because that attempts to load the 
+            // It is not possible to use the AssemblyName class because that attempts to load the
             // assembly. Obviously we are currently trying to find the assembly.
             // So parse the actual assembly name from the name string
             //
@@ -310,24 +356,22 @@ namespace Nuclei.Fusion
         }
 
         /// <summary>
-        /// Turns the module name into a qualified file name by adding the default assembly extension.
+        /// An event handler which is invoked when the search for an assembly fails.
         /// </summary>
-        /// <param name="moduleName">Name of the module.</param>
+        /// <param name="sender">The object which raised the event.</param>
+        /// <param name="args">
+        ///     The <see cref="ResolveEventArgs"/> instance containing the event data.
+        /// </param>
         /// <returns>
-        /// The expected name of the assembly file that contains the module.
+        ///     An assembly reference if the required assembly can be found; otherwise <see langword="null"/>.
         /// </returns>
-        private string MakeModuleNameQualifiedFileName(string moduleName)
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1811:AvoidUncalledPrivateCode",
+            Justification = "This class is embedded in an user assembly and called from there. Hence all methods are internal.")]
+        public Assembly LocateAssemblyOnAssemblyLoadFailure(object sender, ResolveEventArgs args)
         {
-            Debug.Assert(!string.IsNullOrEmpty(moduleName), "The assembly file name should not be empty.");
-
-            return (moduleName.IndexOf(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        ".{0}",
-                        AssemblyExtension), 
-                    StringComparison.OrdinalIgnoreCase) < 0) 
-                ? string.Format(CultureInfo.InvariantCulture, "{0}.{1}", moduleName, AssemblyExtension) 
-                : moduleName;
+            return LocateAssembly(args.Name);
         }
     }
 }
