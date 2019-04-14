@@ -21,29 +21,8 @@
     </Target>
 
     <!-- Display info -->
-    <Target Name="_Build_Prepare_SourceTemplates_DisplayInfo"
-            DependsOnTargets="_Build_Prepare_SourceTemplates_DebugLog">
+    <Target Name="_Build_Prepare_SourceTemplates_DisplayInfo">
         <Message Text="Preparing source files for inclusion in NuGet packages ..."
-                 Importance="low"/>
-    </Target>
-
-    <Target Name="_Build_Prepare_SourceTemplates_DebugLog"
-            Condition="$(ShouldDisplayDebugLog)">
-        <Message Text="Project directory structure:"
-                 Importance="low"/>
-        <Message Text="The workspace is located at:                                                     $(DirWorkspace)"
-                 Importance="low"/>
-        <Message Text="The directory containing the source code is located at:                          $(DirSrc)"
-                 Importance="low"/>
-        <Message Text="The directory containing the NuGet packages is located at:                       $(DirPackages)"
-                 Importance="low"/>
-        <Message Text="The directory containing the nBuildKit files is located at:                      $(DirNBuildKitMsBuild)"
-                 Importance="low"/>
-        <Message Text="The directory containing the nBuildKit scripts is located at:                    $(DirNBuildKitMsBuildExtensions)"
-                 Importance="low"/>
-        <Message Text="The directory containing the nBuildKit templates is located at:                  $(DirNBuildKitMsBuildTemplates)"
-                 Importance="low"/>
-        <Message Text=" "
                  Importance="low"/>
     </Target>
 
