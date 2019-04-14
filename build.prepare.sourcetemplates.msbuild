@@ -7,13 +7,7 @@
         <ExistsBuildPrepareSourceTemplates>true</ExistsBuildPrepareSourceTemplates>
     </PropertyGroup>
 
-    <Import Project="$(DirNBuildKitMsBuildShared)\shared.importbuildsharedsettings.props"
-            Condition="Exists('$(DirNBuildKitMsBuildShared)\shared.importbuildsharedsettings.props') AND '$(ExistsSharedImportBuildSharedSettings)' != 'true' " />
-
-    <Import Project="$(DirNBuildKitMsBuildExtensions)\FindAndReplaceInFile.msbuild"
-            Condition="Exists('$(DirNBuildKitMsBuildExtensions)\FindAndReplaceInFile.msbuild')"/>
-    <Import Project="$(DirNBuildKitMsBuildExtensions)\GetSemanticVersionFromFile.msbuild"
-            Condition="Exists('$(DirNBuildKitMsBuildExtensions)\GetSemanticVersionFromFile.msbuild') AND '$(ExistsExtensionsGetSemanticVersionFromFile)' != 'true' " />
+    <Import Condition="Exists('$(FileImports)') AND '$(ExistsFileImports)' != 'true' " Project="$(FileImports)" />
 
     <Target Name="_Build_Prepare_SourceTemplates_Run"
             DependsOnTargets="_Build_Prepare_SourceTemplates_DisplayInfo">
